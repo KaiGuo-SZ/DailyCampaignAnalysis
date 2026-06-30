@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>获客总表分析工具｜产品版</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="row" style="justify-content: space-between; align-items: baseline;">
+          <div>
+            <div class="title">获客总表分析工具｜产品版</div>
+            <div class="subtle small" id="projectHint"></div>
+          </div>
+          <div style="text-align: right;">
+            <div class="row" style="justify-content: flex-end;">
+              <label class="fileBtn">
+                <input id="fileInput" type="file" accept=".csv,text/csv" />
+                导入 CSV
+              </label>
+            </div>
+            <div id="dataStatus" class="subtle" style="font-size: 14px;"></div>
+            <div id="dataScope" class="subtle small"></div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 12px; justify-content: space-between;">
+          <div class="tabs">
+            <button id="tabOverview" class="tab">一级类型</button>
+            <button id="tabStructure" class="tab">渠道结构</button>
+            <button id="tabStandard" class="tab">标准渠道</button>
+            <button id="tabNonStandard" class="tab">非标渠道</button>
+            <button id="tabTrend" class="tab">趋势</button>
+            <button id="tabCalculator" class="tab">计算器</button>
+          </div>
+          <div class="filterWrap">
+            <div class="field filterItem" style="width: 180px;">
+              <label for="yearMsBtn">年度</label>
+              <div id="yearMs" class="ms">
+                <button id="yearMsBtn" type="button" class="msButton">
+                  <span style="display:flex; flex-direction:column; gap:2px; min-width: 0;">
+                    <span class="msMeta">年度</span>
+                    <span id="yearMsLabel" class="msLabel">全部</span>
+                  </span>
+                  <span class="msRight">
+                    <span id="yearMsBadge" class="msBadge" style="display:none;"></span>
+                    <span class="msCaret">▾</span>
+                  </span>
+                </button>
+                <div id="yearMsPanel" class="msPanel">
+                  <div class="msHead">
+                    <div class="msHeadRow">
+                      <input id="yearMsSearch" class="msSearch" type="text" placeholder="搜索年度" />
+                      <button id="yearMsSelectAll" type="button" class="msAction">全选</button>
+                      <button id="yearMsClear" type="button" class="msAction">清空</button>
+                    </div>
+                  </div>
+                  <div class="msBody"><div id="yearMsOptions" class="msOptions"></div></div>
+                  <div class="msFoot">
+                    <div id="yearMsCount" class="msCount"></div>
+                    <div>Enter/Space 勾选，Esc 关闭</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field filterItem" style="width: 180px;">
+              <label for="monthMsBtn">月</label>
+              <div id="monthMs" class="ms">
+                <button id="monthMsBtn" type="button" class="msButton">
+                  <span style="display:flex; flex-direction:column; gap:2px; min-width: 0;">
+                    <span class="msMeta">月份</span>
+                    <span id="monthMsLabel" class="msLabel">全部</span>
+                  </span>
+                  <span class="msRight">
+                    <span id="monthMsBadge" class="msBadge" style="display:none;"></span>
+                    <span class="msCaret">▾</span>
+                  </span>
+                </button>
+                <div id="monthMsPanel" class="msPanel">
+                  <div class="msHead">
+                    <div class="msHeadRow">
+                      <input id="monthMsSearch" class="msSearch" type="text" placeholder="搜索月份" />
+                      <button id="monthMsSelectAll" type="button" class="msAction">全选</button>
+                      <button id="monthMsClear" type="button" class="msAction">清空</button>
+                    </div>
+                  </div>
+                  <div class="msBody"><div id="monthMsOptions" class="msOptions"></div></div>
+                  <div class="msFoot">
+                    <div id="monthMsCount" class="msCount"></div>
+                    <div>Enter/Space 勾选，Esc 关闭</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field filterItem" style="width: 220px;">
+              <label for="projectMsBtn">项目</label>
+              <div id="projectMs" class="ms">
+                <button id="projectMsBtn" type="button" class="msButton">
+                  <span style="display:flex; flex-direction:column; gap:2px; min-width: 0;">
+                    <span class="msMeta">项目</span>
+                    <span id="projectMsLabel" class="msLabel">全部</span>
+                  </span>
+                  <span class="msRight">
+                    <span id="projectMsBadge" class="msBadge" style="display:none;"></span>
+                    <span class="msCaret">▾</span>
+                  </span>
+                </button>
+                <div id="projectMsPanel" class="msPanel">
+                  <div class="msHead">
+                    <div class="msHeadRow">
+                      <input id="projectMsSearch" class="msSearch" type="text" placeholder="搜索项目" />
+                      <button id="projectMsSelectAll" type="button" class="msAction">全选</button>
+                      <button id="projectMsClear" type="button" class="msAction">清空</button>
+                    </div>
+                  </div>
+                  <div class="msBody"><div id="projectMsOptions" class="msOptions"></div></div>
+                  <div class="msFoot">
+                    <div id="projectMsCount" class="msCount"></div>
+                    <div>Enter/Space 勾选，Esc 关闭</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field filterItem" style="width: 220px;">
+              <label for="periodMsBtn">营期</label>
+              <div id="periodMs" class="ms">
+                <button id="periodMsBtn" type="button" class="msButton">
+                  <span style="display:flex; flex-direction:column; gap:2px; min-width: 0;">
+                    <span class="msMeta">营期</span>
+                    <span id="periodMsLabel" class="msLabel">全部</span>
+                  </span>
+                  <span class="msRight">
+                    <span id="periodMsBadge" class="msBadge" style="display:none;"></span>
+                    <span class="msCaret">▾</span>
+                  </span>
+                </button>
+                <div id="periodMsPanel" class="msPanel">
+                  <div class="msHead">
+                    <div class="msHeadRow">
+                      <input id="periodMsSearch" class="msSearch" type="text" placeholder="搜索营期" />
+                      <button id="periodMsSelectAll" type="button" class="msAction">全选</button>
+                      <button id="periodMsClear" type="button" class="msAction">清空</button>
+                    </div>
+                  </div>
+                  <div class="msBody"><div id="periodMsOptions" class="msOptions"></div></div>
+                  <div class="msFoot">
+                    <div id="periodMsCount" class="msCount"></div>
+                    <div>Enter/Space 勾选，Esc 关闭</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="importHint" class="importHint">
+          先点击右上角“导入 CSV”选择清洗后文件，即可开始分析。
+        </div>
+      </div>
+
+      <div id="overviewSection" style="display:none;">
+        <div class="card" style="margin-top: 14px;">
+          <div class="row" style="justify-content: space-between; align-items: baseline;">
+            <div>
+              <div style="font-size: 16px; font-weight: 900;">一级类型</div>
+              <div class="subtle small">一级类型（标准/非标）→ 二级类型 → 投放平台明细</div>
+            </div>
+            <button id="overviewBigExportBtn" type="button" class="segBtn">导出 CSV</button>
+          </div>
+          <div style="margin-top: 12px;">
+            <div class="table tableWideX" id="overviewBigTable"></div>
+          </div>
+          <div class="row" style="justify-content: space-between; align-items: baseline; margin-top: 14px;">
+            <div style="font-size: 14px; font-weight: 900;">二级类型</div>
+            <div class="row" style="gap: 10px; align-items: center;">
+              <div id="overviewL2Hint" class="subtle small"></div>
+              <button id="overviewL2ExportBtn" type="button" class="segBtn">导出 CSV</button>
+            </div>
+          </div>
+          <div style="margin-top: 10px;">
+            <div class="table tableWideX" id="overviewL2Table"></div>
+          </div>
+          <div class="row" style="justify-content: space-between; align-items: baseline; margin-top: 14px;">
+            <div style="font-size: 14px; font-weight: 900;">投放平台明细</div>
+            <div class="row" style="gap: 10px; align-items: center;">
+              <div class="segTabs">
+                <button id="ovSegAll" type="button" class="segBtn">整体</button>
+                <button id="ovSegStd" type="button" class="segBtn">标准</button>
+                <button id="ovSegNon" type="button" class="segBtn">非标</button>
+              </div>
+              <button id="overviewPlatExportBtn" type="button" class="segBtn">导出 CSV</button>
+            </div>
+          </div>
+          <div class="row subtle small" style="justify-content: space-between; align-items: baseline; margin-top: 6px;">
+            <div id="overviewPlatL2Hint"></div>
+            <button id="overviewPlatL2Clear" type="button" class="segBtn" style="padding: 6px 10px;">清除二级类型</button>
+          </div>
+          <div style="margin-top: 10px;">
+            <div class="table tableWideX" id="overviewPlatTable"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="compareSection">
+        <div class="card" style="margin-top: 14px;">
+          <div class="row" style="justify-content: space-between; align-items: baseline;">
+            <div style="font-size: 16px; font-weight: 900;">渠道总览</div>
+            <div id="overviewMeta" class="subtle small"></div>
+          </div>
+          <div class="gridTop gridTop3">
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">ROI</div>
+                <div class="subtle small">L1总产值 / 投放总成本</div>
+              </div>
+              <canvas id="ovROI"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加产值</div>
+                <div class="subtle small">L1总产值 / 添加数</div>
+              </div>
+              <canvas id="ovAddValue"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">获客成本（CAC）</div>
+                <div class="subtle small">投放总成本 / 获客量</div>
+              </div>
+              <canvas id="ovCAC"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加占比</div>
+                <div class="subtle small">同项目同期：该渠道获客量 / 全渠道获客量</div>
+              </div>
+              <canvas id="ovLeadShare"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">转率</div>
+                <div class="subtle small">L1总单量 / 添加数</div>
+              </div>
+              <canvas id="ovConv"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加率</div>
+                <div class="subtle small">添加数 / 获客量</div>
+              </div>
+              <canvas id="ovAddRate"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="gridDetail">
+          <div class="card">
+            <div class="row" style="justify-content: space-between; align-items: baseline;">
+              <div style="font-size: 14px; font-weight: 900;">投放平台总览</div>
+              <div class="subtle small">点击平台查看明细</div>
+            </div>
+            <div style="margin-top: 12px;" class="field searchField">
+              <label for="searchInput">搜索平台</label>
+              <input id="searchInput" type="text" placeholder="输入平台关键字" />
+            </div>
+            <div id="leftEmptyHint" class="empty"></div>
+            <div class="list">
+              <div class="listHeader">
+                <div>投放平台</div>
+                <div style="text-align:right;">项目数</div>
+                <div style="text-align:right;">获客量</div>
+                <div style="text-align:right;">ROI</div>
+              </div>
+              <div id="platformList" class="listBody"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row" style="justify-content: space-between; align-items: baseline;">
+              <div style="font-size: 16px; font-weight: 900;">平台明细</div>
+              <div id="activePlatformLabel" class="subtle small"></div>
+            </div>
+            <div id="rightEmptyHint" class="empty"></div>
+            <div class="kv" id="platformMeta"></div>
+            <div class="gridTop gridTop2" style="margin-top: 12px;">
+              <div class="chartBox">
+                <div class="chartHeader">
+                  <div class="chartName">ROI</div>
+                  <div class="subtle small">项目维度</div>
+                </div>
+                <canvas id="plROI"></canvas>
+              </div>
+              <div class="chartBox">
+                <div class="chartHeader">
+                  <div class="chartName">添加产值</div>
+                  <div class="subtle small">L1总产值 / 添加数</div>
+                </div>
+                <canvas id="plAddValue"></canvas>
+              </div>
+              <div class="chartBox">
+                <div class="chartHeader">
+                  <div class="chartName">获客成本（CAC）</div>
+                  <div class="subtle small">项目维度</div>
+                </div>
+                <canvas id="plCAC"></canvas>
+              </div>
+              <div class="chartBox">
+                <div class="chartHeader">
+                  <div class="chartName">获客量占比</div>
+                  <div class="subtle small">项目内：该平台在该项目该期获客量 / 该项目该期获客总量</div>
+                </div>
+                <canvas id="plLeadShare"></canvas>
+              </div>
+              <div class="chartBox">
+                <div class="chartHeader">
+                  <div class="chartName">转率</div>
+                  <div class="subtle small">项目维度</div>
+                </div>
+                <canvas id="plConv"></canvas>
+              </div>
+              <div class="chartBox">
+                <div class="chartHeader">
+                  <div class="chartName">添加率</div>
+                  <div class="subtle small">添加数 / 获客量</div>
+                </div>
+                <canvas id="plAddRate"></canvas>
+              </div>
+            </div>
+            <div class="card small subtle" style="margin-top: 14px;">
+              <div style="font-weight: 900; color: var(--text); margin-bottom: 8px;">口径说明</div>
+              <div class="row">
+                <div style="flex: 1 1 380px;">ROI = L1总产值 / 投放总成本</div>
+                <div style="flex: 1 1 380px;">CAC = 投放总成本 / 获客量</div>
+                <div style="flex: 1 1 380px;">转率 = L1总单量 / 添加数</div>
+                <div style="flex: 1 1 380px;">添加产值 = L1总产值 / 添加数</div>
+                <div style="flex: 1 1 380px;">添加率 = 添加数 / 获客量</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="structureSection" style="display:none;">
+        <div class="card" style="margin-top: 14px;">
+          <div class="row" style="justify-content: space-between; align-items: baseline;">
+            <div style="font-size: 16px; font-weight: 900;">渠道结构</div>
+          </div>
+          <div class="structTop">
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div>
+                  <div class="chartName">标准/非标占比</div>
+                  <div class="subtle small">按项目（获客量）</div>
+                </div>
+                <div class="legend">
+                  <span><span class="dot std"></span> 标准</span>
+                  <span><span class="dot non"></span> 非标</span>
+                </div>
+              </div>
+              <canvas id="structShare"></canvas>
+            </div>
+            <div class="structTables">
+              <div>
+                <div class="tableTitle"><button type="button" class="tableTitleBtn" data-struct-compare-mode="overall">整体</button></div>
+                <div class="table" id="structTableOverall"></div>
+              </div>
+              <div>
+                <div class="tableTitle"><button type="button" class="tableTitleBtn" data-struct-compare-mode="standard">标准</button></div>
+                <div class="table" id="structTableStd"></div>
+              </div>
+              <div>
+                <div class="tableTitle"><button type="button" class="tableTitleBtn" data-struct-compare-mode="nonstandard">非标</button></div>
+                <div class="table" id="structTableNon"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="structDrillCard" class="card drillCard" style="display:none;">
+          <div class="drillHead">
+            <div id="structDrillTitle" class="drillTitle"></div>
+            <button id="structDrillClose" type="button" class="closeBtn">关闭</button>
+          </div>
+          <div style="margin-top: 12px;">
+            <div class="table" id="structDrillTable"></div>
+          </div>
+        </div>
+
+        <div id="structCompareCard" class="card drillCard" style="display:none;">
+          <div class="drillHead">
+            <div id="structCompareTitle" class="drillTitle"></div>
+            <button id="structCompareClose" type="button" class="closeBtn">关闭</button>
+          </div>
+          <div style="margin-top: 12px;">
+            <div class="table tableWide" id="structCompareTable"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 14px;">
+          <div class="row" style="justify-content: space-between; align-items: baseline;">
+            <div style="font-size: 16px; font-weight: 900;">指标对比</div>
+            <div class="subtle small">标准 vs 非标（按项目）</div>
+          </div>
+          <div class="gridTop gridTop2" style="margin-top: 12px;">
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">ROI</div>
+                <div class="legend">
+                  <span><span class="dot std"></span> 标准</span>
+                  <span><span class="dot non"></span> 非标</span>
+                </div>
+              </div>
+              <canvas id="structROI"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">转率</div>
+                <div class="legend">
+                  <span><span class="dot std"></span> 标准</span>
+                  <span><span class="dot non"></span> 非标</span>
+                </div>
+              </div>
+              <canvas id="structConv"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">获客成本（CAC）</div>
+                <div class="legend">
+                  <span><span class="dot std"></span> 标准</span>
+                  <span><span class="dot non"></span> 非标</span>
+                </div>
+              </div>
+              <canvas id="structCAC"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加产值</div>
+                <div class="legend">
+                  <span><span class="dot std"></span> 标准</span>
+                  <span><span class="dot non"></span> 非标</span>
+                </div>
+              </div>
+              <canvas id="structAddValue"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="trendSection" style="display:none;">
+        <div class="card" style="margin-top: 14px;">
+          <div class="row" style="justify-content: space-between; align-items: baseline;">
+            <div>
+              <div style="font-size: 16px; font-weight: 900;">趋势</div>
+              <div class="subtle small">流量结构与关键指标变化</div>
+            </div>
+          </div>
+          <div class="gridTop gridTop2">
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">标准/非标添加占比（100%堆叠）</div>
+                <div class="legend">
+                  <span><span class="dot std"></span> 标准</span>
+                  <span><span class="dot non"></span> 非标</span>
+                </div>
+              </div>
+              <canvas id="trendShare"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">ROI 趋势</div>
+                <div class="legend legendInline" id="trendLegendROI"></div>
+              </div>
+              <canvas id="trendROI"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加成本趋势</div>
+                <div class="legend legendInline" id="trendLegendAddCost"></div>
+              </div>
+              <canvas id="trendAddCost"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加产值趋势</div>
+                <div class="legend legendInline" id="trendLegendAddValue"></div>
+              </div>
+              <canvas id="trendAddValueLine"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">获客成本趋势</div>
+                <div class="legend legendInline" id="trendLegendCAC"></div>
+              </div>
+              <canvas id="trendCAC"></canvas>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加率趋势</div>
+                <div class="legend legendInline" id="trendLegendAddRate"></div>
+              </div>
+              <canvas id="trendAddRateLine"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 14px;">
+          <div class="row" style="justify-content: space-between; align-items: baseline;">
+            <div>
+              <div style="font-size: 16px; font-weight: 900;">投放平台 × 营期｜指标热力图</div>
+              <div class="subtle small">支持标准/非标/全部切换，以及“近5期占比&gt;3%”过滤</div>
+            </div>
+            <div class="row" style="gap: 12px;">
+              <div class="segTabs">
+                <button id="trendBucketAll" type="button" class="segBtn">全部</button>
+                <button id="trendBucketStd" type="button" class="segBtn">标准</button>
+                <button id="trendBucketNon" type="button" class="segBtn">非标</button>
+              </div>
+              <div class="segTabs">
+                <button id="trendRecentYes" type="button" class="segBtn">近5期占比&gt;3%</button>
+                <button id="trendRecentAll" type="button" class="segBtn">全部平台</button>
+                <button id="trendRecentNo" type="button" class="segBtn">近5期占比≤3%</button>
+              </div>
+            </div>
+          </div>
+          <div class="heatmapMeta" id="trendHeatMeta"></div>
+          <div class="gridTop gridTop1">
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加占比</div>
+                <div class="subtle small">当前口径下各营期绝对占比</div>
+              </div>
+              <div id="heatLeadShare" class="heatmapWrap"></div>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">ROI</div>
+                <div class="subtle small">L1总产值 / 投放总成本</div>
+              </div>
+              <div id="heatROI" class="heatmapWrap"></div>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">转率</div>
+                <div class="subtle small">L1总单量 / 添加数</div>
+              </div>
+              <div id="heatConv" class="heatmapWrap"></div>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加成本</div>
+                <div class="subtle small">投放总成本 / 添加数</div>
+              </div>
+              <div id="heatAddCost" class="heatmapWrap"></div>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加产值</div>
+                <div class="subtle small">L1总产值 / 添加数</div>
+              </div>
+              <div id="heatAddValue" class="heatmapWrap"></div>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">获客成本</div>
+                <div class="subtle small">投放总成本 / 获客量</div>
+              </div>
+              <div id="heatCAC" class="heatmapWrap"></div>
+            </div>
+            <div class="chartBox">
+              <div class="chartHeader">
+                <div class="chartName">添加率</div>
+                <div class="subtle small">添加数 / 获客量</div>
+              </div>
+              <div id="heatAddRate" class="heatmapWrap"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="calculatorSection" style="display:none;">
+        <div class="card" style="margin-top: 14px;">
+          <div class="row" style="justify-content: space-between; align-items: baseline;">
+            <div>
+              <div style="font-size: 16px; font-weight: 900;">计算器</div>
+              <div class="subtle small">分析营期 vs 对照营期集合（按投放平台对齐）</div>
+            </div>
+            <button id="calcExportBtn" type="button" class="primaryBtn">导出 CSV</button>
+          </div>
+          <div class="row" style="margin-top: 12px; gap: 12px; flex-wrap: wrap;">
+            <div class="field" style="width: 320px;">
+              <label for="calcAnalysisPeriod">分析营期（项目+期）</label>
+              <select id="calcAnalysisPeriod"></select>
+            </div>
+            <div class="field" style="width: 320px;">
+              <label for="calcRefMsBtn">对照营期（项目+期，多选）</label>
+              <div id="calcRefMs" class="ms">
+                <button id="calcRefMsBtn" type="button" class="msButton">
+                  <span style="display:flex; flex-direction:column; gap:2px; min-width: 0;">
+                    <span class="msMeta">对照营期</span>
+                    <span id="calcRefMsLabel" class="msLabel">全部</span>
+                  </span>
+                  <span class="msRight">
+                    <span id="calcRefMsBadge" class="msBadge" style="display:none;"></span>
+                    <span class="msCaret">▾</span>
+                  </span>
+                </button>
+                <div id="calcRefMsPanel" class="msPanel">
+                  <div class="msHead">
+                    <div class="msHeadRow">
+                      <input id="calcRefMsSearch" class="msSearch" type="text" placeholder="搜索：项目或期（如 英语 / 13）" />
+                      <button id="calcRefMsSelectAll" type="button" class="msAction">全选</button>
+                      <button id="calcRefMsClear" type="button" class="msAction">清空</button>
+                    </div>
+                  </div>
+                  <div class="msBody"><div id="calcRefMsOptions" class="msOptions"></div></div>
+                  <div class="msFoot">
+                    <div id="calcRefMsCount" class="msCount"></div>
+                    <div>Enter/Space 勾选，Esc 关闭</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 12px;">
+            <div class="table tableWideX" id="calcResultTable"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./level2_mapping.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
